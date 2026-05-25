@@ -1,0 +1,18 @@
+# Template — copy to gradle.properties and edit the two paths below for your machine.
+#
+# This file is checked into git as documentation. Your actual gradle.properties
+# is gitignored because it contains absolute paths to your local Steam install.
+
+# Path to PZ's bundled Java install dir (contains the vanilla PZ jars
+# we compile against). Find via Steam → right-click PZ → Manage → Browse local
+# files → then look for the Java folder. Examples:
+#
+#   macOS:   ~/Library/Application Support/Steam/steamapps/common/ProjectZomboid/Project Zomboid.app/Contents/Java
+#   Linux:   ~/.local/share/Steam/steamapps/common/ProjectZomboid/jre64/lib   (path may vary)
+#   Windows: C:/Program Files (x86)/Steam/steamapps/common/ProjectZomboid
+pz.jarDir=/Users/yourname/Library/Application Support/Steam/steamapps/common/ProjectZomboid/Project Zomboid.app/Contents/Java
+
+# Path to the ZombieBuddy jar (Workshop ID 3619862853).
+# Subscribe to ZombieBuddy in Steam first, then point this at the libs/ZombieBuddy.jar
+# inside its Workshop content folder.
+zb.jar=/Users/yourname/Library/Application Support/Steam/steamapps/workshop/content/108600/3619862853/mods/ZombieBuddy/libs/ZombieBuddy.jar

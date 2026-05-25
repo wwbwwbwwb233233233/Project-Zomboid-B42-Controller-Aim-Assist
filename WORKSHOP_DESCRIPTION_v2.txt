@@ -1,0 +1,377 @@
+================================================================
+                    中文版 (Chinese)
+================================================================
+
+【模组简介】
+
+Project Zomboid Build 42 引入了全新的射击系统:玩家不再使用 B41
+那种"自动指向最近目标"的模式,而是手动控制屏幕上的瞄准准星,
+打到僵尸身上的哪个部位、是否爆头,完全取决于准星的位置和距离/
+精度衰减判定。
+
+这套系统对鼠标键盘玩家来说很自然,但对手柄玩家有较高门槛 ——
+B42 默认的手柄瞄准没有任何辅助,准星完全依赖右摇杆的精细控制,
+快节奏的僵尸围堵场景里很吃力。
+
+本模组的目标是让原生手柄玩家也能在 B42 里玩好射击,同时尽量保留
+B42 射击系统的特色(自由准星、部位判定、距离-精度衰减)。
+
+它不修改任何武器伤害数值,不绕过命中/暴击判定,也不会替你
+"自动锁敌"。它做的只是:当你推右摇杆瞄准时,如果准星靠近一个
+可见的、不在墙后的僵尸,准星移动会自动减速,像被轻微磁吸附一样
+向僵尸方向偏移,让你更容易把准星稳在僵尸身上。一旦你停止推杆,
+或者准星离开僵尸,这个效果立刻消失。
+
+简单说,它复刻了 Build 41 时代手柄射击的手感 —— 不会替你瞄,
+但让瞄准本身不那么累。
+
+
+【核心功能】
+
+身体吸附区
+  每个可见、未被遮挡的僵尸周围有一个矩形减速区,大小根据僵尸
+  sprite 的高度自适应。准星进入这个区域时移动变慢,自然倾向于
+  停留在僵尸身上。
+
+头部独立区
+  在身体区内部,头部有一个单独的小判定区,基于游戏内的骨骼动画
+  位置实时计算,所以会随僵尸的动作(站立、爬行、被击倒、被推
+  开)动态变化。头部区吸附比身体区更强,鼓励瞄头爆头。
+
+准星跟踪
+  当被吸附的僵尸在屏幕上移动时,准星会以可调的强度跟随僵尸平移,
+  而不是被甩在后面。追踪走动中的僵尸时不需要你不停推杆补偿。
+
+向上抗性
+  在身体区内,当你把摇杆向上推(想从身体瞄到头)时,减速效果
+  减弱,方便往上拉。这个抗性强度可调。
+
+视线判定(防 X 光)
+  墙后、建筑里、被茂密植被遮挡的僵尸不会触发吸附,准星不会
+  "穿墙吸附"。这一点很重要,否则就变成了透视外挂。
+
+摇杆响应曲线
+  Per-axis 幂曲线,小推杆灵敏度低(精细微调),大推杆灵敏度高
+  (快速横扫)。效果类似 Steam Input 的"缓和"或"宽广"曲线,
+  但独立在 mod 内部可调,不影响 Steam Input 设置。
+
+总开关与完整设置页面
+  所有参数都通过游戏内菜单调整,实时生效。设置页顶部有一个总
+  开关,可以完全禁用模组而不需要取消订阅。
+
+中英双语
+  模组 UI 自动跟随游戏语言切换。
+
+
+【设计思路】
+
+本模组刻意采用"软吸附"而非"自动锁敌":准星不会跳到僵尸身上,
+也不会被锁死在僵尸上。吸附只是让你的输入"更容易停留"在僵尸身上,
+你仍然在主导每一次射击的瞄准过程。
+
+这样做的原因:
+  - 保留 B42 射击系统的核心玩法(自由准星、部位选择、距离衰减)
+  - 不破坏游戏内置的精度判定逻辑(暴击、距离衰减、武器熟练度)
+  - 不让 PvP 和多人模式失衡
+
+每一个吸附区的大小、强度、跟踪行为都可以单独调整,你可以根据
+自己的手柄、Steam Input 设置、个人偏好微调到合适的手感。
+
+
+【运行要求】
+
+  - Project Zomboid Build 42.18 或更高版本(unstable beta 分支)
+  - ZombieBuddy(Workshop ID 3619862853):本模组需要 ZombieBuddy
+    作为 Java 字节码注入框架运行。订阅本模组前请先订阅
+    ZombieBuddy。
+
+
+【macOS / Linux 玩家:ZombieBuddy 需要手动安装】
+
+ZombieBuddy 在 Windows 上可以自动安装,macOS 和 Linux(包括
+Steam Deck)必须手动操作:
+
+1. 订阅 ZombieBuddy 后,找到 ZombieBuddy.jar 文件:
+   - macOS: ~/Library/Application Support/Steam/steamapps/workshop/
+            content/108600/3619862853/mods/ZombieBuddy/libs/
+   - Linux: ~/.local/share/Steam/steamapps/workshop/content/108600/
+            3619862853/mods/ZombieBuddy/libs/
+
+2. 把 ZombieBuddy.jar 复制到 PZ 的 Java 文件夹:
+   - macOS: ~/Library/Application Support/Steam/steamapps/common/
+            ProjectZomboid/Project Zomboid.app/Contents/Java/
+   - Linux: PZ 启动时 ZombieBuddy 会弹出对话框告诉你具体位置
+
+3. Steam → 右键 Project Zomboid → 属性 → 启动选项,加入:
+   -javaagent:ZombieBuddy.jar --
+
+4. 启动游戏。第一次启动时 ZombieBuddy 会弹出对话框,询问是否
+   批准本模组的 Java 补丁。点击同意。如果没有弹出,可以手动
+   编辑 ~/.zombie_buddy/mod_approvals.json,找到本模组的 entry,
+   把 decision 字段从 false 改成 true,保存重启。
+
+Windows 玩家通常不需要这些步骤 —— 直接订阅 ZombieBuddy 和本模组
+即可。
+
+
+【设置页面】
+
+游戏主菜单 → Options → MODS → 【B42】手柄辅瞄
+
+所有参数都是滑条,可以实时调整。建议先用默认值玩一段时间,感觉
+哪里不顺手再单独调整对应参数。
+
+启用辅助瞄准
+  总开关。关闭后整个模组完全不介入。
+
+身体框 宽度 / 高度 / 下延
+  身体减速区的尺寸(僵尸 sprite 高度的比例)。下延是矩形向脚下
+  延伸的部分,用于覆盖爬行和被击倒的僵尸。
+
+头部框 半宽 / 半高
+  头部减速区的尺寸。
+
+身体减速 X / Y
+  准星在身体区时的吸附强度。值越小越"吸",1.0 = 不吸,
+  0.0 = 完全锁死。X 是水平方向,Y 是垂直方向。
+
+头部减速
+  头部区的吸附强度,默认值比身体更强。
+
+向上抗性
+  在身体区内向上推杆时,减速被多大程度抵消(0 = 完全不抵消,
+  1 = 完全抵消)。
+
+跟踪强度
+  准星跟随移动僵尸的强度(0 = 不跟,1 = 1:1 跟随)。
+
+摇杆响应曲线
+  摇杆 per-axis 幂曲线指数。1.0 = 线性,1.5 ≈ Steam"缓和",
+  2.0 ≈ Steam"宽广"。如果你已经在 Steam Input 里设置了曲线,
+  建议把模组内的这个值保持在 1.0 避免两层曲线叠加导致输入过钝。
+
+
+【已知限制与注意事项】
+
+  - 只作用于右摇杆瞄准。鼠标和近战不受影响。
+  - 头部判定依赖僵尸的 Bip01_Head 骨骼。死亡、倒地、ragdoll
+    状态的僵尸可能没有这个骨骼,这种情况下自动 fallback 到
+    只有身体区。
+  - 多人模式:服务器和所有客户端都需要安装 ZombieBuddy + 本
+    模组,缺一不可。
+  - 本模组在 B42.18 unstable 上开发测试。B42 后续版本(.19+)
+    如果修改了相关射击代码,补丁可能失效。遇到这种情况欢迎反馈。
+  - 如果你使用了 Steam Input 的瞄准灵敏度曲线设置,请注意本模组
+    内置的"摇杆响应曲线"会和 Steam Input 的曲线叠加。两者保持
+    一致或者只用其中一个,可以避免输入手感过钝或过敏。
+
+
+【协议】
+
+MIT License
+
+
+================================================================
+                    English Version
+================================================================
+
+[Overview]
+
+Project Zomboid Build 42 introduced a new ranged combat system.
+Unlike B41's "auto-aim at nearest target" model, B42 hands the
+cursor to the player: you freely position the reticle on screen,
+and where on the zombie you hit (head, torso, limb) — together
+with distance- and skill-based accuracy — determines whether the
+shot lands at all.
+
+This system feels natural with mouse and keyboard, but it sets a
+high bar for controller players. B42's default controller aim
+has no assist whatsoever — the reticle is driven purely by fine
+right-stick movement. In the fast, crowded situations Zomboid
+throws at you, that quickly becomes exhausting.
+
+This mod aims to make native controller play viable for ranged
+combat in B42, while preserving the new system's character (free
+cursor aim, hit-zone damage, distance-based accuracy falloff).
+
+It does not modify weapon damage values, bypass hit / crit
+calculations, or "auto-lock" onto enemies. What it does: when
+you push the right stick to aim, if your reticle approaches a
+visible, unobstructed zombie, cursor movement decelerates and
+gently pulls toward the zombie — a soft magnetic effect. The
+moment you stop pushing the stick, or move off the zombie, the
+effect disappears.
+
+In short: it brings back some of the Build 41 controller feel for
+firearms. It won't aim for you — it just makes aiming less of a
+chore.
+
+
+[Core Features]
+
+Body soft-snap zone
+  Each visible, unobstructed zombie has a rectangular slowdown
+  area sized by sprite height. Cursor decelerates inside the
+  zone and naturally settles on the zombie.
+
+Independent head zone
+  Inside the body zone, the head has its own smaller hitbox,
+  computed in real time from the zombie's skeletal animation —
+  so it tracks all poses (standing, crawling, knocked-down,
+  pushed). Head zone pulls harder than body, encouraging
+  headshots.
+
+Cursor tracking
+  When a snapped zombie moves on screen, the cursor follows at
+  an adjustable strength rather than being left behind. You
+  don't need to constantly counter-stick to track walking
+  zombies.
+
+Upward resistance
+  Inside the body zone, pushing the stick upward (to climb from
+  body to head) bypasses some of the slowdown so you can pull up
+  to the head naturally. Adjustable.
+
+Line-of-sight filter (no X-ray)
+  Zombies behind walls, inside buildings, or hidden by dense
+  foliage do not trigger snap. The reticle will not "snap through
+  walls" — important so the mod doesn't turn into a wallhack.
+
+Stick response curve
+  Per-axis power curve: slow stick inputs map to slow cursor
+  (fine adjustment), fast inputs to fast cursor (quick scans).
+  Similar in effect to Steam Input's "Relaxed" or "Wide" curves,
+  but independent of Steam Input settings.
+
+Master toggle and full settings page
+  Every parameter is adjustable in-game via sliders, applied in
+  real time. A master "Enable" tickbox at the top fully disables
+  the mod without unsubscribing.
+
+Bilingual UI
+  Auto-follows the game's language (English / Chinese).
+
+
+[Design Philosophy]
+
+This mod intentionally uses soft-snap rather than auto-lock. The
+reticle never jumps to a zombie or locks onto one. Snap only
+makes your input "easier to settle" on the zombie — you remain
+in control of every shot.
+
+Why:
+  - Preserve B42's combat system (free cursor, hit-zone choice,
+    accuracy falloff).
+  - Don't break the game's built-in accuracy logic (crits,
+    distance falloff, weapon skill).
+  - Don't unbalance PvP or multiplayer encounters.
+
+Every snap zone's size, strength, and tracking behavior is
+individually tunable so you can dial it in to your controller,
+your Steam Input setup, and your personal preference.
+
+
+[Requirements]
+
+  - Project Zomboid Build 42.18 or higher (unstable beta branch).
+  - ZombieBuddy (Workshop ID 3619862853): this mod uses
+    ZombieBuddy as its Java bytecode-injection framework.
+    Subscribe to ZombieBuddy before subscribing to this mod.
+
+
+[macOS / Linux Players: Manual ZombieBuddy Install Required]
+
+ZombieBuddy auto-installs on Windows. macOS and Linux (including
+Steam Deck) require manual setup:
+
+1. After subscribing to ZombieBuddy, locate ZombieBuddy.jar:
+   - macOS:
+     ~/Library/Application Support/Steam/steamapps/workshop/
+     content/108600/3619862853/mods/ZombieBuddy/libs/
+   - Linux:
+     ~/.local/share/Steam/steamapps/workshop/content/108600/
+     3619862853/mods/ZombieBuddy/libs/
+
+2. Copy ZombieBuddy.jar into PZ's Java folder:
+   - macOS:
+     ~/Library/Application Support/Steam/steamapps/common/
+     ProjectZomboid/Project Zomboid.app/Contents/Java/
+   - Linux: ZombieBuddy will pop up a dialog at launch telling
+     you the exact destination path on your system.
+
+3. In Steam, right-click Project Zomboid → Properties → Launch
+   Options, and add:
+       -javaagent:ZombieBuddy.jar --
+
+4. Launch the game. On first launch, ZombieBuddy will prompt you
+   to approve this mod's Java patch — click approve. If no prompt
+   appears, edit ~/.zombie_buddy/mod_approvals.json, find this
+   mod's entry, change "decision" from false to true, save, and
+   restart.
+
+Windows users typically don't need any of these steps — just
+subscribe to ZombieBuddy and this mod.
+
+
+[Settings]
+
+Main Menu → Options → MODS → [B42] Controller Aim Assist
+
+Every setting is a slider, adjustable in real time. Start with
+the defaults and only tune specific parameters once you feel
+something isn't quite right.
+
+Enable aim-assist
+  Master toggle. Off = mod is fully silent.
+
+Body hitbox width / height / down
+  Size of the body slowdown zone (as a fraction of the zombie's
+  sprite height). "Down" extends the rectangle below the foot
+  anchor to cover crawling / knocked-down zombies.
+
+Head box half-width / half-height
+  Size of the head slowdown zone.
+
+Body slowdown X / Y
+  Snap strength inside the body zone. Lower = stickier.
+  1.0 = no snap, 0.0 = full lock. X is horizontal, Y is vertical.
+
+Head slowdown
+  Snap strength for the head zone, usually stronger than body
+  by default.
+
+Upward resistance
+  How much body slowdown is bypassed when pushing the stick
+  upward (0 = none, 1 = full bypass).
+
+Tracking strength
+  How strongly the cursor follows a moving snapped zombie
+  (0 = no tracking, 1 = 1:1).
+
+Stick response curve
+  Per-axis power exponent. 1.0 = linear, 1.5 ≈ Steam "Relaxed",
+  2.0 ≈ Steam "Wide". If you already use a curve in Steam Input,
+  keep this at 1.0 to avoid stacking two curves into something
+  over-flat.
+
+
+[Known Limitations and Notes]
+
+  - Only affects right-stick aim. Mouse and melee are untouched.
+  - The head zone relies on the zombie's Bip01_Head bone. Dead,
+    prone, or ragdolling zombies may not have it available; the
+    mod automatically falls back to body-only snap in those cases.
+  - Multiplayer: the server and every client must have
+    ZombieBuddy + this mod installed.
+  - This mod is developed and tested on B42.18 unstable. Future
+    B42 versions (.19+) may modify the underlying combat code in
+    ways that break this mod. If that happens, please report it.
+  - If you've configured a sensitivity curve in Steam Input, note
+    that the mod's "Stick response curve" stacks with Steam
+    Input's curve. Match them, or use only one, to avoid input
+    feeling either too dull or too twitchy.
+
+
+[License]
+
+MIT

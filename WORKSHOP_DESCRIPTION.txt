@@ -1,0 +1,46 @@
+[h1]【B42】手柄辅瞄 / [B42] Controller Aim Assist[/h1]
+
+[b]中文[/b]
+这个 mod 修改了手柄的瞄准操作映射,在保留了当前 B42 射击玩法的情况下,通过动态灵敏度吸附和准星跟踪,一定程度上还原了 B41 枪械射击的手感,给原生手柄玩家一个可用的射击途径。
+
+主要功能:
+[list]
+[*] 准心进入僵尸身体范围时自动吸附 / 减速
+[*] 头部独立判定区域,瞄头时吸附更强
+[*] 跟随移动僵尸的位置
+[*] 摇杆响应曲线可调
+[*] 完整设置页面(中英文,自动跟随游戏语言)
+[*] 一键开关
+[/list]
+
+[b]English[/b]
+This mod remaps controller aim input. While preserving B42's current ranged combat mechanics, it brings back some of the B41 firearm feel through dynamic soft-snap sensitivity and reticle tracking, giving native-controller players a usable aiming option.
+
+Features:
+[list]
+[*] Soft cursor snap when aiming at a zombie's body
+[*] Independent head zone with stronger pull
+[*] Tracks moving zombies
+[*] Adjustable stick response curve
+[*] Full settings page (Chinese / English, auto-follows game language)
+[*] Master on/off toggle
+[/list]
+
+[h1][b]REQUIRED: ZombieBuddy[/b][/h1]
+Subscribe to [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3619862853]ZombieBuddy[/url] first. This mod depends on it.
+
+[b]macOS / Linux: manual install required[/b]
+PZ on macOS/Linux can not auto-install ZombieBuddy. After subscribing:
+[olist]
+[*] Copy [b]ZombieBuddy.jar[/b] from the workshop `mods/ZombieBuddy/libs/` folder to PZ's Java install folder.
+[*] Add to Steam Launch Options: [code]-javaagent:ZombieBuddy.jar --[/code]
+[/olist]
+ZombieBuddy will then prompt you to approve this mod's Java patch on first launch — accept.
+
+Windows: direct subscribe usually works.
+
+[h1]Settings[/h1]
+Main Menu → Options → MODS → 【B42】手柄辅瞄. All knobs are sliders. Use the "Enable" tickbox at the top to globally toggle the mod.
+
+[h1]License[/h1]
+MIT
