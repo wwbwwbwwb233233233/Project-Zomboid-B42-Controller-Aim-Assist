@@ -1,0 +1,48 @@
+UI_CN = {
+    UI_CAA_name = "【B42】手柄辅瞄",
+    UI_CAA_desc = "调整手柄辅助瞄准。修改后点 Apply 才会生效。",
+
+    UI_CAA_enable = "启用辅助瞄准",
+    UI_CAA_enable_tip = "总开关。关闭时 mod 完全不介入,下方其他设置无效。",
+
+    UI_CAA_overlay = "显示辅助区可视化(用于截图 / 调参)",
+    UI_CAA_overlay_tip = "在每只可见僵尸身上画出身体吸附区(绿色矩形)和头部吸附区(青色矩形)。注意:可能影响游戏平衡性,仅建议在调参 / 录制时启用。",
+
+    UI_CAA_body_w = "身体吸附区 宽度",
+    UI_CAA_body_w_tip = "身体吸附区的宽度(僵尸 sprite 高度的比例)。",
+    UI_CAA_body_h = "身体吸附区 高度",
+    UI_CAA_body_h_tip = "身体吸附区从脚下往上的高度。",
+    UI_CAA_body_down = "身体吸附区 下延",
+    UI_CAA_body_down_tip = "脚下往下额外延伸(覆盖爬行/趴下的僵尸)。",
+
+    UI_CAA_head_w = "头部吸附区 宽度",
+    UI_CAA_head_w_tip = "头部吸附区宽度(围绕头骨屏幕投影居中)。",
+    UI_CAA_head_h = "头部吸附区 高度",
+    UI_CAA_head_h_tip = "头部吸附区高度。",
+    UI_CAA_head_offset = "头部区 上移",
+    UI_CAA_head_offset_tip = "把头部吸附区从脖子骨骼往上移到真实头部中心。游戏的头骨实际在脖子上,这个把判定区推到头真正所在的位置。打开'显示辅助区可视化',边看边调到青色区贴在头上。会随僵尸头部摆动跟随。",
+
+    UI_CAA_assist_x = "水平吸附强度",
+    UI_CAA_assist_x_tip = "准星水平方向被吸向僵尸的强度。值越大越粘。0.0 = 不吸,1.0 = 完全锁死。",
+    UI_CAA_assist_y = "垂直吸附强度",
+    UI_CAA_assist_y_tip = "准星垂直方向被吸向僵尸的强度。值越大越粘。",
+    UI_CAA_assist_head = "头部吸附强度",
+    UI_CAA_assist_head_tip = "头部吸附区的吸附强度。值越大越粘。通常比身体更强,鼓励爆头。",
+    UI_CAA_up_resist = "上拉助力(身体到头部)",
+    UI_CAA_up_resist_tip = "在身体吸附区内向上推杆时,吸附效果减弱多少(方便把准星从身体拉到头部)。0 = 不减弱,1 = 完全减弱。",
+
+    UI_CAA_track = "准星跟随强度",
+    UI_CAA_track_tip = "被吸附的僵尸移动时,准星跟随它的强度。0 = 不跟,1 = 完全跟随。",
+    UI_CAA_curve = "摇杆灵敏度曲线",
+    UI_CAA_curve_tip = "Per-axis 幂曲线:小推杆变慢(精细操作),大推杆变快。1.0 = 线性,1.5 = Steam 缓和,2.0 = 宽广。已在 Steam Input 里设过曲线就保持 1.0。",
+
+    UI_CAA_recenter = "回中抗性",
+    UI_CAA_recenter_tip = "默认情况下松开摇杆,准星会弹回中心 —— 这就是你需要一直'对抗'才能保持位置的原因。值越大准星越抵抗这个回拉力,松手后停在原地。0 = 原版,0.9 = 基本不回弹。(仍保留少量回中力,完全松手会缓慢飘回,瞄准自然退出。)",
+
+    UI_CAA_exp_drift = "启用实验功能:相对漂移(推荐)",
+    UI_CAA_exp_drift_tip = "实验性功能。开启后,准星会获得'推着摇杆持续滑动'的手感(类似 RDR2 / 双摇杆射击),使用下方两个设置。默认关闭 —— 下方两个漂移设置在你开启前一直是灰的。",
+    UI_CAA_drift_amount = "相对漂移强度",
+    UI_CAA_drift_amount_tip = "推着摇杆时准星持续漂移的强度。值越大漂移越明显,但会失去'摇杆指哪准星精确到哪'的定位感。仅在上方实验开关开启时生效。",
+    UI_CAA_drift_curve = "漂移灵敏度曲线",
+    UI_CAA_drift_curve_tip = "相对漂移生效时使用的摇杆响应曲线 —— 漂移把摇杆变成速度油门。与上面 polar 的'摇杆灵敏度曲线'相互独立。仅在上方实验开关开启时生效。",
+}

@@ -6,6 +6,7 @@ import zombie.characters.IsoZombie;
 import zombie.core.skinnedmodel.animation.AnimationPlayer;
 import zombie.core.skinnedmodel.model.SkeletonBone;
 import zombie.input.AimingMode;
+import zombie.input.JoypadManager;
 import zombie.inventory.InventoryItem;
 import zombie.inventory.types.HandWeapon;
 import zombie.iso.IsoCell;
@@ -58,13 +59,19 @@ public class Patch_AimingMode {
     // 身体框尺寸(spriteH 的比例)。
     // WIDTH_RATIO 是全宽,HEIGHT_RATIO 是从锚点往上的高度,
     // DOWN_RATIO 是从锚点往下额外延伸(覆盖爬行/趴下姿态)。
-    public static volatile float HITBOX_WIDTH_RATIO = 0.35f;
-    public static volatile float HITBOX_HEIGHT_RATIO = 0.40f;
+    public static volatile float HITBOX_WIDTH_RATIO = 0.40f;
+    public static volatile float HITBOX_HEIGHT_RATIO = 0.45f;
     public static volatile float HITBOX_DOWN_RATIO = 0.15f;
 
-    // 头部框尺寸(spriteH 的比例,半宽 + 半高)。围绕 Bip01_Head 骨骼屏幕投影。
-    public static volatile float HEAD_HALF_W = 0.05f;
-    public static volatile float HEAD_HALF_H = 0.04f;
+    // 头部框尺寸(spriteH 的比例,半宽 + 半高)。围绕真实头中心屏幕投影。
+    public static volatile float HEAD_HALF_W = 0.03f;
+    public static volatile float HEAD_HALF_H = 0.03f;
+
+    // 头中心外推系数:Bip01_Head 骨骼实际在脖子顶(偏低),真实头中心在它之上。
+    // 头中心 = Head + (Head − Neck) × HEAD_OFFSET_RATIO,沿颈→头方向往上外推。
+    // 用 (Head−Neck) 的倍数 → 自动适应体型/姿态,且摇头晃脑时头中心实时跟随。
+    // 玩家用 debug overlay 看着拖滑条调到贴头。
+    public static volatile float HEAD_OFFSET_RATIO = 1.0f;
 
     // 摇杆响应曲线指数。被 Patch_AimAxisX/Y 应用:out = sign(in) * |in|^exp。
     // 1.0 = 线性(不变换),1.5 = Steam"缓和",2.0 = "宽广",0.6 = "激进"。
@@ -74,6 +81,43 @@ public class Patch_AimingMode {
     // SLOWDOWN_Y 的衰减效果按此比例被免除。0 = 无抗性,1 = 完全免除。
     // 默认 0.7 让玩家在身体框内向上拉到头部框时阻力大幅降低,瞄头更顺。
     public static volatile float UP_RESISTANCE = 0.70f;
+
+    // ============ 回中抗性 + 速度注入(瞄准手感,见 docs/AIM_FEEL_DESIGN.md) ============
+
+    // 回中抗性:削弱 vanilla polar 把 cursor 朝屏幕中心拉回的力。
+    // 0 = vanilla(松手 cursor 立刻回中),0.9 = 几乎不回中(松手 cursor 基本停住)。
+    // 只削"朝 center 的径向分量",切向移动不受影响。上限 0.9 保留少量回中力以便自然退出。
+    public static volatile float RECENTER_RESISTANCE = 0.9f;
+
+    // 速度注入:推杆时额外往"向外"方向加位移,模拟 relative(直角坐标系)的"推着持续移动"。
+    // 0 = 纯 polar 定位(推到哪 cursor 到对应半径即停),>0 = 带 relative 味(推着持续滑)。
+    // 乘 VELOCITY_INJECT_SCALE 转成像素/秒尺度。乘 stick magnitude → 松手自动归零。
+    public static volatile float VELOCITY_INJECT = 0.0f;
+
+    // 注入尺度:滑条 1.0 = 这么多像素/秒。
+    public static final float VELOCITY_INJECT_SCALE = 600.0f;
+
+    // 当前帧的注入衰减系数:cursor 在减速区内时 = 该区的减速系数(让注入也被减速,
+    // 不抵消"粘"感);不在减速区 = 1.0(注入全效)。OnEnter 设,OnExit 读。
+    public static volatile float lastInjectScale = 1.0f;
+
+    // relative drift 模式下右摇杆用的独立曲线指数(默认 1.0 = 线性)。
+    // polar 模式用 STICK_CURVE_EXPONENT(定位曲线),drift 模式摇杆是速度油门,
+    // 默认线性最可控。Patch_AimAxisX/Y 根据 inRelativeDriftMode 选用哪条。
+    public static volatile float DRIFT_CURVE_EXPONENT = 1.35f;
+
+    // 当前是否处于 relative drift 模式(drift 开启 + 正在瞄准)。
+    // 由 OnEnter 设置,Patch_AimAxisX/Y 读取来切换曲线。drift 关闭时永远 false,
+    // 所以不开 drift 的玩家曲线行为完全不变。
+    public static volatile boolean inRelativeDriftMode = false;
+
+    // 曲线 morph:当前"生效"的曲线指数,每帧朝目标(drift 或 polar)平滑过渡,
+    // 让进出 drift 时摇杆灵敏度平滑变化而非硬跳。初始 1.0(线性,恒等),
+    // 几帧内 morph 到真实 polar 曲线。Patch_AimAxisX/Y 直接读这个值。
+    public static volatile float currentCurveExp = 1.0f;
+
+    // 上一帧时间戳(算 dt 用)。PZ 单线程,无需锁。
+    public static volatile long lastFrameMs = 0L;
 
     // ============ 运行时状态(Lua HUD/调试读取) ============
 
@@ -132,12 +176,20 @@ public class Patch_AimingMode {
             @Patch.Argument(value = 6, readOnly = true) float zoom,
             @Patch.Argument(value = 7, readOnly = true) Vector2 out_result
     ) {
+        // 曲线 morph:每帧让生效曲线指数朝目标平滑过渡(用上一帧的 inRelativeDriftMode,
+        // 渐变天然容忍一帧延迟)。0.15/帧 ≈ 0.3 秒过渡到位。放最开头,即使下面 early
+        // return 也每帧更新,保证退出 drift 时曲线能平滑 morph 回 polar。
+        float curveTarget = inRelativeDriftMode ? DRIFT_CURVE_EXPONENT : STICK_CURVE_EXPONENT;
+        currentCurveExp += (curveTarget - currentCurveExp) * 0.15f;
+
         // 每次进入都先重置所有 per-frame 状态(因为 lerpAiming 每 tick 都被
         // 调,即使不在瞄准状态)。
         lastInZone = false;
         lastTracking = false;
         lastInHead = false;
         lastAiming = false;
+        lastInjectScale = 1.0f;
+        inRelativeDriftMode = false;
         pendingApplyExitTrack = false;
         pendingTrackDeltaX = 0f;
         pendingTrackDeltaY = 0f;
@@ -145,6 +197,8 @@ public class Patch_AimingMode {
         // 各种 early-return 守卫
         if (player == null) return;
         if (!AimOverrideState.applyOverride) return;
+        // UI 占用手柄 → 完全不介入(lastAiming 保持 false,OnExit 因此也自动跳过)。
+        if (AimOverrideState.suppressed) return;
         // 只在 vanilla 进入 RANGED 系列模式时介入(RANGED_PRECISE 等)。
         if (mode == null || !mode.name().startsWith("RANGED")) return;
         if (src == null) return;
@@ -158,6 +212,9 @@ public class Patch_AimingMode {
         // 设在 cell 检查之前,即使周围没僵尸,HUD 也保持 active 状态。
         lastAiming = true;
 
+        // drift 开启 + 瞄准中 → 进入 relative drift 模式,右摇杆切换到 drift 曲线。
+        inRelativeDriftMode = (VELOCITY_INJECT > 0.001f);
+
         IsoCell cell = player.getCell();
         if (cell == null) return;
         ArrayList<IsoZombie> list = cell.getZombieList();
@@ -170,8 +227,9 @@ public class Patch_AimingMode {
         // 时间戳压到 float 32 位(取 long 低 31 位,避免 sign bit 翻转)。
         // 用 float 而不是 long 因为缓存 entry 是 float[],节省一个数组。
         float nowF = (float) (nowMs & 0x7FFFFFFFL);
-        // 头骨世界坐标读取的临时 buffer(每次循环 new 1 个,避免 alloc 风暴)。
+        // 头/颈骨世界坐标读取的临时 buffer(循环外 new,避免 alloc 风暴)。
         Vector3f headBuf = new Vector3f();
+        Vector3f neckBuf = new Vector3f();
 
         // 命中候选:sticky(优先延续上帧选中的僵尸)或 first(本帧第一个命中)。
         int stickyId = lastHitZombieId;
@@ -207,17 +265,29 @@ public class Patch_AimingMode {
 
             int zid = z.getID();
 
-            // 读头骨世界坐标 → 投影到屏幕。失败(ragdolling 等)记 NaN。
+            // 读颈/头骨世界坐标,沿 颈→头 方向外推到真实头中心,再投影到屏幕。
+            // Bip01_Head 骨骼实际在脖子顶(偏低),直接用它判定会 snap 不到真实头部。
+            // 头中心 = Head + (Head − Neck) × HEAD_OFFSET_RATIO。摇头晃脑时两骨骼都动,
+            // 外推方向实时跟随,头中心始终贴在真实头部上。失败(ragdolling 等)记 NaN。
             float headSX = Float.NaN;
             float headSY = Float.NaN;
             AnimationPlayer ap = z.getAnimationPlayer();
             if (ap != null) {
                 try {
                     ap.getBoneWorldPosition(SkeletonBone.Bip01_Head, headBuf);
-                    headSX = LuaManager.GlobalObject.isoToScreenX(idx, headBuf.x, headBuf.y, headBuf.z);
-                    headSY = LuaManager.GlobalObject.isoToScreenY(idx, headBuf.x, headBuf.y, headBuf.z);
+                    ap.getBoneWorldPosition(SkeletonBone.Bip01_Neck, neckBuf);
+                    // 颈→头 向量 = 头朝向轴
+                    float axx = headBuf.x - neckBuf.x;
+                    float axy = headBuf.y - neckBuf.y;
+                    float axz = headBuf.z - neckBuf.z;
+                    // 沿轴往上外推到头中心
+                    float hcx = headBuf.x + axx * HEAD_OFFSET_RATIO;
+                    float hcy = headBuf.y + axy * HEAD_OFFSET_RATIO;
+                    float hcz = headBuf.z + axz * HEAD_OFFSET_RATIO;
+                    headSX = LuaManager.GlobalObject.isoToScreenX(idx, hcx, hcy, hcz);
+                    headSY = LuaManager.GlobalObject.isoToScreenY(idx, hcx, hcy, hcz);
                 } catch (Throwable t) {
-                    // 留 NaN
+                    // 留 NaN(Neck 或 Head 拿不到,退化为只有身体区)
                 }
             }
             // 头骨屏幕坐标存 cache(给 Lua HUD overlay 用)。
@@ -358,6 +428,10 @@ public class Patch_AimingMode {
         targetX = src.x + (targetX - src.x) * slowX;
         targetY = src.y + (targetY - src.y) * slowY;
 
+        // 记下本帧减速系数(两轴平均),供 OnExit 让速度注入同等衰减,
+        // 避免注入在减速区内把"粘"感抵消掉。
+        lastInjectScale = (slowX + slowY) * 0.5f;
+
         // 跟踪 delta 留给 OnExit 用,直接加在 vanilla 的最终 cursor 上,
         // 绕过 vanilla 内部 lerp 的衰减。
         if (hasTrackingDelta) {
@@ -370,14 +444,84 @@ public class Patch_AimingMode {
 
     @Patch.OnExit
     public static void onExit(
+            @Patch.Argument(value = 0, readOnly = true) IsoPlayer player,
+            @Patch.Argument(value = 1, readOnly = true) Vector2 src,
+            @Patch.Argument(value = 2, readOnly = true) float targetX,
+            @Patch.Argument(value = 3, readOnly = true) float targetY,
+            @Patch.Argument(value = 4, readOnly = true) float centerX,
+            @Patch.Argument(value = 5, readOnly = true) float centerY,
             @Patch.Argument(value = 7, readOnly = false) Vector2 out_result
     ) {
         // vanilla 此时已经把最终 cursor 写好到 out_result。
-        // 我们加上当前帧的跟踪位移,实现"cursor 1:1 跟随僵尸"的效果。
-        if (!pendingApplyExitTrack) return;
         if (out_result == null) return;
-        out_result.x += pendingTrackDeltaX * TRACKING_FACTOR;
-        out_result.y += pendingTrackDeltaY * TRACKING_FACTOR;
+        if (!AimOverrideState.applyOverride) return;
+        // 只在瞄准激活时介入(lastAiming 由 OnEnter 的 gate 链设置)。
+        if (!lastAiming || src == null) return;
+
+        // === 回中抗性 + 速度注入(见 docs/AIM_FEEL_DESIGN.md)===
+        // 两者默认 0 = 完全不改 vanilla,跳过整段省开销。
+        if (RECENTER_RESISTANCE > 0.001f || VELOCITY_INJECT > 0.001f) {
+            // dt:用时间戳差值,clamp 防首帧/卡顿巨大值。
+            long now = System.currentTimeMillis();
+            float dt = 0.016f;
+            if (lastFrameMs != 0L) {
+                float raw = (now - lastFrameMs) / 1000.0f;
+                dt = (raw < 0.005f) ? 0.005f : (raw > 0.05f ? 0.05f : raw);
+            }
+            lastFrameMs = now;
+
+            // 这帧 vanilla 的位移
+            float dx = out_result.x - src.x;
+            float dy = out_result.y - src.y;
+
+            // 1) 回中抗性:削弱朝 center 的径向分量
+            if (RECENTER_RESISTANCE > 0.001f) {
+                float toCx = centerX - src.x;
+                float toCy = centerY - src.y;
+                float toClen = (float) Math.sqrt(toCx * toCx + toCy * toCy);
+                if (toClen > 0.001f) {
+                    float ux = toCx / toClen;
+                    float uy = toCy / toClen;
+                    float radial = dx * ux + dy * uy; // >0 = 这帧在朝中心收
+                    if (radial > 0f) {
+                        dx -= ux * radial * RECENTER_RESISTANCE;
+                        dy -= uy * radial * RECENTER_RESISTANCE;
+                    }
+                }
+            }
+
+            // 2) 速度注入:沿 vanilla 的"向外"方向(target - center)加位移。
+            //    乘 stick magnitude → 松手(mag=0)自动归零,退出逻辑因此保住。
+            if (VELOCITY_INJECT > 0.001f) {
+                JoypadManager jm = JoypadManager.instance;
+                if (jm != null) {
+                    int idx = player.getPlayerNum();
+                    float sx = jm.getAimingAxisX(idx);
+                    float sy = jm.getAimingAxisY(idx);
+                    float mag = (float) Math.sqrt(sx * sx + sy * sy);
+                    if (mag > 0.001f) {
+                        float outx = targetX - centerX;
+                        float outy = targetY - centerY;
+                        float outlen = (float) Math.sqrt(outx * outx + outy * outy);
+                        if (outlen > 0.001f) {
+                            // 乘 lastInjectScale:减速区内注入被同等压制,不抵消"粘"感。
+                            float inj = mag * VELOCITY_INJECT * VELOCITY_INJECT_SCALE * dt * lastInjectScale;
+                            dx += (outx / outlen) * inj;
+                            dy += (outy / outlen) * inj;
+                        }
+                    }
+                }
+            }
+
+            out_result.x = src.x + dx;
+            out_result.y = src.y + dy;
+        }
+
+        // === tracking:跟随僵尸屏幕位移,加在最后(1:1 跟随)===
+        if (pendingApplyExitTrack) {
+            out_result.x += pendingTrackDeltaX * TRACKING_FACTOR;
+            out_result.y += pendingTrackDeltaY * TRACKING_FACTOR;
+        }
     }
 
 }

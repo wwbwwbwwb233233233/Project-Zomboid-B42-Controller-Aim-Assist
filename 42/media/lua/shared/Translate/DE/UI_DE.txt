@@ -1,0 +1,48 @@
+UI_DE = {
+    UI_CAA_name = "[B42] Controller-Zielhilfe",
+    UI_CAA_desc = "Passe das Verhalten der Controller-Zielhilfe an. Änderungen werden nach Klick auf Übernehmen wirksam.",
+
+    UI_CAA_enable = "Zielhilfe aktivieren",
+    UI_CAA_enable_tip = "Hauptschalter. Wenn aus, ist die Mod komplett inaktiv und die anderen Einstellungen haben keine Wirkung.",
+
+    UI_CAA_overlay = "Fangzonen anzeigen (für Screenshots / Feinabstimmung)",
+    UI_CAA_overlay_tip = "Zeichnet farbige Rechtecke um jeden sichtbaren Zombie, die die Körper- und Kopf-Fangzonen anzeigen. HINWEIS: kann die Spielbalance beeinflussen — nur für Feinabstimmung / Aufnahme empfohlen.",
+
+    UI_CAA_body_w = "Körper-Fangzone Breite",
+    UI_CAA_body_w_tip = "Breite der Körper-Fangzone (Anteil der Zombie-Sprite-Höhe).",
+    UI_CAA_body_h = "Körper-Fangzone Höhe",
+    UI_CAA_body_h_tip = "Höhe der Körper-Fangzone, vom Fuß aufwärts gemessen.",
+    UI_CAA_body_down = "Körper-Fangzone untere Erweiterung",
+    UI_CAA_body_down_tip = "Zusätzliche Erweiterung nach unten unter dem Fuß (deckt kriechende / liegende Zombies ab).",
+
+    UI_CAA_head_w = "Kopf-Fangzone Breite",
+    UI_CAA_head_w_tip = "Breite der Kopf-Fangzone (zentriert auf der Projektion des Kopfknochens).",
+    UI_CAA_head_h = "Kopf-Fangzone Höhe",
+    UI_CAA_head_h_tip = "Höhe der Kopf-Fangzone.",
+    UI_CAA_head_offset = "Kopfzone vertikaler Versatz",
+    UI_CAA_head_offset_tip = "Verschiebt die Kopf-Fangzone vom Halsknochen nach oben zur echten Kopfmitte. Der Kopfknochen des Spiels sitzt am Hals, daher schiebt dies die Zone dorthin, wo der Kopf tatsächlich ist. Aktiviere 'Fangzonen anzeigen' und passe an, bis die cyanfarbene Zone auf dem Kopf sitzt. Folgt dem Kopf des Zombies bei Bewegung.",
+
+    UI_CAA_assist_x = "Horizontale Fangstärke",
+    UI_CAA_assist_x_tip = "Wie stark der Cursor horizontal zum Zombie gezogen wird. Höher = klebriger. 0.0 = kein Zug, 1.0 = volle Fixierung.",
+    UI_CAA_assist_y = "Vertikale Fangstärke",
+    UI_CAA_assist_y_tip = "Wie stark der Cursor vertikal zum Zombie gezogen wird. Höher = klebriger.",
+    UI_CAA_assist_head = "Kopf-Fangstärke",
+    UI_CAA_assist_head_tip = "Zugstärke innerhalb der Kopf-Fangzone. Höher = klebriger. Üblicherweise stärker als der Körper eingestellt, um Kopfschüsse zu erleichtern.",
+    UI_CAA_up_resist = "Hochzieh-Erleichterung (Körper zu Kopf)",
+    UI_CAA_up_resist_tip = "Wie stark der Körper-Fang nachlässt, wenn du den Stick nach oben drückst (erleichtert das Ziehen des Cursors vom Körper zum Kopf). 0 = keine Erleichterung, 1 = volle Erleichterung.",
+
+    UI_CAA_track = "Cursor-Folgestärke",
+    UI_CAA_track_tip = "Wie stark der Cursor einem sich bewegenden Zombie folgt, auf den er gefangen ist. 0 = kein Folgen, 1 = 1:1-Folgen.",
+    UI_CAA_curve = "Stick-Empfindlichkeitskurve",
+    UI_CAA_curve_tip = "Achsenweise Potenzkurve: kleine Stick-Eingaben werden langsamer (feinere Kontrolle), große schneller. 1.0 = linear, 1.5 = Steam Relaxed, 2.0 = Wide. Wenn du bereits Steam-Input-Kurven nutzt, lass dies auf 1.0.",
+
+    UI_CAA_recenter = "Rückzentrier-Widerstand",
+    UI_CAA_recenter_tip = "Standardmäßig springt der Cursor zur Mitte zurück, wenn du den Stick loslässt — das zwingt dich, eine Position zu 'halten'. Höhere Werte lassen den Cursor diesem Zug widerstehen, sodass er bleibt, wo du ihn gelassen hast. 0 = Original, 0.9 = bleibt fast stehen. (Driftet noch langsam zurück, damit das Zielen sauber endet, wenn du loslässt.)",
+
+    UI_CAA_exp_drift = "Experimentell aktivieren: Relativer Drift (empfohlen)",
+    UI_CAA_exp_drift_tip = "Experimentell. Wenn aktiv, erhält der Cursor ein 'Stick halten und er gleitet weiter'-Gefühl (wie RDR2 / Twin-Stick-Shooter) über die beiden Einstellungen unten. Standardmäßig aus — die beiden Drift-Einstellungen bleiben ausgegraut, bis du dies aktivierst.",
+    UI_CAA_drift_amount = "Relative Drift-Stärke",
+    UI_CAA_drift_amount_tip = "Wie stark der Cursor weiterdriftet, während du den Stick hältst. Höher = mehr kontinuierlicher Drift, aber du verlierst die Präzision 'genau dort zielen, wo der Stick ist'. Nur aktiv, wenn der experimentelle Schalter oben an ist.",
+    UI_CAA_drift_curve = "Drift-Empfindlichkeitskurve",
+    UI_CAA_drift_curve_tip = "Stick-Reaktionskurve, die bei aktivem relativem Drift verwendet wird — Drift macht den Stick zu einem Geschwindigkeitsregler. Unabhängig von der polaren 'Stick-Empfindlichkeitskurve' oben. Nur aktiv, wenn der experimentelle Schalter oben an ist.",
+}

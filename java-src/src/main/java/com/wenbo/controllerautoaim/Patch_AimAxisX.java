@@ -24,7 +24,9 @@ public class Patch_AimAxisX {
     @Patch.OnExit
     public static void onExit(@Patch.Return(readOnly = false) float ret) {
         if (!AimOverrideState.applyOverride) return;
-        float e = Patch_AimingMode.STICK_CURVE_EXPONENT;
+        if (AimOverrideState.suppressed) return;  // UI 占用 → 不改摇杆,留给 UI 导航
+        // 用 morph 后的生效指数(polar↔drift 平滑过渡,见 Patch_AimingMode.currentCurveExp)。
+        float e = Patch_AimingMode.currentCurveExp;
         // 接近 1.0 视为线性 = 不处理。避免 pow(x, 1.000001) 这种无意义计算。
         if (e > 0.999f && e < 1.001f) return;
         float a = Math.abs(ret);

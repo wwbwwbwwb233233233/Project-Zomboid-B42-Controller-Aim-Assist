@@ -20,6 +20,16 @@ public class AimOverrideState {
     public static volatile boolean debugLog = false;
     public static volatile boolean applyOverride = true;
 
+    // UI 占用手柄时由 Lua 每帧推送。true = 所有 patch 完全不介入(让位给轮盘/地图/库存
+    // 等 UI 的右摇杆导航)。跟 applyOverride 区别:applyOverride 是玩家总开关(持久),
+    // suppressed 是运行时临时状态(每帧刷新)。
+    public static volatile boolean suppressed = false;
+
+    // Lua gate 的总结论:true = 本地玩家 + 手柄已绑定 + 无 UI 占用 + 持枪 + 推杆超死区,
+    // 全部满足。由 Lua 每帧推送。Patch_IsPrecisionAimKeyDown 完全听它,不再自己读摇杆
+    // (自己读摇杆会绕过手柄绑定 + UI 判断 → 手柄没配对就触发、轮盘里选不了项目)。
+    public static volatile boolean aimGranted = false;
+
     // Debug overlay 开关 — Lua 端 ISUIElement render() 时查询。默认 OFF。
     public static volatile boolean showOverlay = false;
 
@@ -29,6 +39,16 @@ public class AimOverrideState {
     public static void caa_setApplyOverride(boolean enabled) { applyOverride = enabled; }
     @LuaMethod(global = true)
     public static boolean caa_getApplyOverride() { return applyOverride; }
+
+    @LuaMethod(global = true)
+    public static void caa_setSuppressed(boolean v) { suppressed = v; }
+    @LuaMethod(global = true)
+    public static boolean caa_getSuppressed() { return suppressed; }
+
+    @LuaMethod(global = true)
+    public static void caa_setAimGranted(boolean v) { aimGranted = v; }
+    @LuaMethod(global = true)
+    public static boolean caa_getAimGranted() { return aimGranted; }
 
     @LuaMethod(global = true)
     public static void caa_setShowOverlay(boolean enabled) { showOverlay = enabled; }
@@ -116,6 +136,10 @@ public class AimOverrideState {
     public static double caa_getHeadHalfW() { return Patch_AimingMode.HEAD_HALF_W; }
     @LuaMethod(global = true)
     public static double caa_getHeadHalfH() { return Patch_AimingMode.HEAD_HALF_H; }
+    @LuaMethod(global = true)
+    public static void caa_setHeadOffset(double v) { Patch_AimingMode.HEAD_OFFSET_RATIO = (float) v; }
+    @LuaMethod(global = true)
+    public static double caa_getHeadOffset() { return Patch_AimingMode.HEAD_OFFSET_RATIO; }
 
     // 减速强度
     @LuaMethod(global = true)
@@ -144,4 +168,18 @@ public class AimOverrideState {
     public static double caa_getStickCurve() { return Patch_AimingMode.STICK_CURVE_EXPONENT; }
     @LuaMethod(global = true)
     public static double caa_getUpResist() { return Patch_AimingMode.UP_RESISTANCE; }
+
+    // 回中抗性 + 速度注入(瞄准手感)
+    @LuaMethod(global = true)
+    public static void caa_setRecenterResist(double v) { Patch_AimingMode.RECENTER_RESISTANCE = (float) v; }
+    @LuaMethod(global = true)
+    public static double caa_getRecenterResist() { return Patch_AimingMode.RECENTER_RESISTANCE; }
+    @LuaMethod(global = true)
+    public static void caa_setVelocityInject(double v) { Patch_AimingMode.VELOCITY_INJECT = (float) v; }
+    @LuaMethod(global = true)
+    public static double caa_getVelocityInject() { return Patch_AimingMode.VELOCITY_INJECT; }
+    @LuaMethod(global = true)
+    public static void caa_setDriftCurve(double v) { Patch_AimingMode.DRIFT_CURVE_EXPONENT = (float) v; }
+    @LuaMethod(global = true)
+    public static double caa_getDriftCurve() { return Patch_AimingMode.DRIFT_CURVE_EXPONENT; }
 }

@@ -1,0 +1,89 @@
+TITLE: B42 — Controller-Zielhilfe
+
+[h1]Was macht dieser Mod?[/h1]
+
+Dieser Mod ändert einen Teil der Controller-Eingabezuordnung für Schusswaffen und ergänzt ein paar Sensitivitäts-Mechaniken. Damit kommt etwas vom B41-Schussgefühl auf dem Controller zurück und Fernkampf wird in der aktuellen Version auf dem Gamepad tatsächlich spielbar. Das Ziel ist der Schritt von "spielbar" zu "zuverlässig" — dafür brauche ich mehr Feedback.
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_2.gif[/img]
+
+
+[hr][/hr]
+
+
+[h1]Was hat sich geändert?[/h1]
+
+[b]1. Controller-Eingabezuordnung[/b]
+Du musst RT nicht mehr halb antippen, um das Fadenkreuz zu holen — drück einfach den rechten Stick und der Zielmodus geht an.
+
+[b]2. Dynamische Sensitivität[/b]
+Nutzt ein Zielhilfe-System ähnlich wie in Apex Legends. Körper und Kopf des Zombies haben jeweils eigene Verlangsamungszonen mit unterschiedlicher Sensitivität. Wenn das Fadenkreuz in eine Zone gerät, verlangsamt es sich entsprechend und folgt dabei der Bewegung des Zombies.
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_1.gif[/img]
+
+[b]3. Verhalten des rechten Sticks[/b]
+Die Antwortkurve des rechten Sticks beim Zielen wurde angepasst, damit sie mit der dynamischen Sensitivität zusammenpasst.
+
+
+[hr][/hr]
+
+
+[h1]Was hat sich NICHT geändert?[/h1]
+
+[list]
+[*] Waffenschaden bleibt gleich
+[*] Trefferberechnung bleibt gleich
+[*] Ballistikverhalten bleibt gleich
+[/list]
+
+
+[hr][/hr]
+
+
+[h1]Bedienung[/h1]
+
+[b]Grundlagen[/b]
+Mit Schusswaffe in der Hand: rechten Stick drücken, das Fadenkreuz erscheint, zieh es in die Nähe eines Zombies und feinjustiere. Die Kopfregion hat einen spürbaren Snap-Effekt.
+Das braucht etwas Eingewöhnung — am besten nicht direkt auf deinem Lieblings-Save testen, bevor du den Dreh raushast.
+
+[b]Feinabstimmung[/b]
+Wenn sich das Fadenkreuzverhalten zu schwach oder zu stark anfühlt, kannst du die Parameter auf der Einstellungsseite anpassen, bis es passt. (Detaillierte Beschreibungen jedes Parameters folgen in einem späteren Update.)
+
+[b]Optionales Debug-Overlay[/b]
+Aktiviere [i]Show snap zones[/i] auf der Einstellungsseite, um die Körper- und Kopf-Zielzonen rund um jeden Zombie sichtbar zu machen. Nützlich zum Tunen oder Aufnehmen von Demos.
+[i]Hinweis: das kann die Spielbalance beeinflussen, also nur zum Tunen/Aufnehmen empfohlen — nicht für normales Spielen.[/i]
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_3.gif[/img]
+
+
+[hr][/hr]
+
+
+[h1]Voraussetzungen[/h1]
+
+[b]ZombieBuddy[/b] — Workshop ID [b]3619862853[/b]
+Dieser Mod nutzt ZombieBuddy als Framework für Java-Bytecode-Injektion. Abonniere zuerst ZombieBuddy, dann diesen Mod.
+Installationsanleitung für ZombieBuddy findest du auf seiner Workshop-Seite.
+
+
+[hr][/hr]
+
+
+[h1]Steam Deck[/h1]
+
+Dieser Mod wurde auf dem Steam Deck entwickelt und getestet. ZombieBuddy braucht eine einmalige manuelle Installation im Desktop Mode (Linux kann Java-Agents nicht automatisch aus dem Steam Workshop installieren).
+
+[b]Schnellversion[/b] — Kopiere [code]ZombieBuddy.jar[/code] aus dem ZombieBuddy-Workshop-Ordner in das PZ-Verzeichnis [code]jre64/lib/[/code], und füge dann [code]-javaagent:ZombieBuddy.jar --[/code] in den Launch Options von PZ ein.
+
+
+[hr][/hr]
+
+
+[h1]Was als Nächstes kommt[/h1]
+
+Die Kopf-Snap-Zone polieren, um das Gefühl zu verbessern — die aktuelle Kopf-Hitbox funktioniert, könnte aber enger und reaktionsschneller sein.
+
+
+[hr][/hr]
+
+
+[i]Dieser Mod ist noch in Arbeit — jedes Feedback ist sehr willkommen.[/i]

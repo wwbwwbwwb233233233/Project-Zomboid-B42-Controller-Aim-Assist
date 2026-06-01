@@ -1,0 +1,89 @@
+TITLE: B42 Controller Aim Assist
+
+[h1]What does this mod do?[/h1]
+
+This mod changes some of the controller input mappings for firearms along with a few sensitivity mechanics, bringing back some of the B41 controller shooting feel and making ranged combat actually playable on a gamepad in the current version. The goal is to go from "playable" to "reliable" — and I need more feedback to get there.
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_2.gif[/img]
+
+
+[hr][/hr]
+
+
+[h1]What's changed?[/h1]
+
+[b]1. Controller input mapping[/b]
+You no longer need to half-pull RT to bring up the aiming reticle — just push the right stick to enter aim mode.
+
+[b]2. Dynamic sensitivity[/b]
+Uses an aim-assist system similar to Apex Legends. The zombie's body and head each have their own slowdown zones with different sensitivity levels. When your reticle enters a zone, it decelerates accordingly and also tracks the zombie's movement.
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_1.gif[/img]
+
+[b]3. Right stick behavior[/b]
+The right stick's response curve while aiming has been adjusted to complement the dynamic sensitivity.
+
+
+[hr][/hr]
+
+
+[h1]What's NOT changed?[/h1]
+
+[list]
+[*] No changes to weapon damage
+[*] No changes to hit detection
+[*] No changes to ballistic behavior
+[/list]
+
+
+[hr][/hr]
+
+
+[h1]How to use[/h1]
+
+[b]Basics[/b]
+While holding a firearm, push the right stick to bring up the reticle, drag it near a zombie and fine-tune your aim. The head area has a noticeable snap effect.
+This may take some practice to get used to — maybe don't test it on your favorite save until you've got the hang of it.
+
+[b]Tuning[/b]
+If the reticle behavior feels too weak or too strong, tweak the parameters in the settings page to dial in your preferred feel. (Detailed parameter descriptions will be added in a future update.)
+
+[b]Optional debug overlay[/b]
+Enable [i]Show snap zones[/i] in the settings page to visualize the body and head assist zones around each zombie. Useful for tuning or recording demos.
+[i]Note: this may affect game balance, so it's recommended for tuning only — not regular play.[/i]
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_3.gif[/img]
+
+
+[hr][/hr]
+
+
+[h1]Requirements[/h1]
+
+[b]ZombieBuddy[/b] — Workshop ID [b]3619862853[/b]
+This mod requires ZombieBuddy as its Java bytecode-injection framework. Subscribe to ZombieBuddy first, then subscribe to this mod.
+For ZombieBuddy installation instructions, see its Workshop page.
+
+
+[hr][/hr]
+
+
+[h1]Steam Deck[/h1]
+
+This mod was developed and tested on Steam Deck. ZombieBuddy requires a one-time manual install in Desktop Mode (Linux can't auto-install Java agents from Steam Workshop).
+
+[b]Quick version[/b] — Copy [code]ZombieBuddy.jar[/code] from its Workshop folder into PZ's [code]jre64/lib/[/code] directory, then add [code]-javaagent:ZombieBuddy.jar --[/code] to PZ's launch options.
+
+
+[hr][/hr]
+
+
+[h1]What's next[/h1]
+
+Refining the head snap zone to improve the feel — the current head hitbox works but could be tighter and more responsive.
+
+
+[hr][/hr]
+
+
+[i]This mod is still a work in progress — all feedback is very welcome.[/i]

@@ -1,0 +1,89 @@
+TITLE: B42 — Wspomaganie celowania na padzie
+
+[h1]Co robi ten mod?[/h1]
+
+Ten mod zmienia część mapowania pada do broni palnej i dorzuca kilka mechanik czułości. Dzięki temu wraca trochę feelingu strzelania z B41 na padzie, a walka dystansowa w obecnej wersji staje się realnie grywalna na gamepadzie. Cel to przejście od "grywalnego" do "stabilnego" — i do tego potrzebny mi większy feedback.
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_2.gif[/img]
+
+
+[hr][/hr]
+
+
+[h1]Co się zmieniło?[/h1]
+
+[b]1. Mapowanie pada[/b]
+Nie musisz już wciskać RT do połowy, żeby przywołać celownik — wystarczy pchnąć prawą gałkę i tryb celowania włącza się sam.
+
+[b]2. Dynamiczna czułość[/b]
+Używa systemu wspomagania celowania podobnego do Apex Legends. Ciało i głowa zombie mają osobne strefy spowalniające, każda z własnym poziomem czułości. Kiedy celownik wchodzi w strefę, odpowiednio zwalnia i dodatkowo śledzi ruch zombie.
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_1.gif[/img]
+
+[b]3. Zachowanie prawej gałki[/b]
+Krzywa reakcji prawej gałki podczas celowania została podkręcona tak, żeby pasowała do dynamicznej czułości.
+
+
+[hr][/hr]
+
+
+[h1]Co się NIE zmieniło?[/h1]
+
+[list]
+[*] Obrażenia broni są takie same
+[*] Wykrywanie trafień jest takie same
+[*] Zachowanie balistyki jest takie samo
+[/list]
+
+
+[hr][/hr]
+
+
+[h1]Jak używać[/h1]
+
+[b]Podstawy[/b]
+Trzymając broń, pchnij prawą gałkę, żeby pojawił się celownik, przesuń go blisko zombie i dopracuj. Strefa głowy ma wyraźny efekt snap.
+Trzeba się trochę przyzwyczaić — lepiej nie testować na ulubionym zapisie, dopóki nie złapiesz feelingu.
+
+[b]Strojenie[/b]
+Jeśli celownik wydaje się za słaby albo za mocny, dopasuj parametry na stronie ustawień pod siebie. (Szczegółowe opisy każdego parametru pojawią się w kolejnym update.)
+
+[b]Opcjonalny overlay debugowy[/b]
+Włącz [i]Show snap zones[/i] na stronie ustawień, żeby widzieć strefy wspomagania ciała i głowy wokół każdego zombie. Przydatne do strojenia albo nagrywania demek.
+[i]Uwaga: to może wpływać na balans gry, więc polecane tylko do strojenia/nagrywania — nie do normalnej rozgrywki.[/i]
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_3.gif[/img]
+
+
+[hr][/hr]
+
+
+[h1]Wymagania[/h1]
+
+[b]ZombieBuddy[/b] — Workshop ID [b]3619862853[/b]
+Ten mod używa ZombieBuddy jako frameworka do wstrzykiwania bytecodu Java. Najpierw subskrybuj ZombieBuddy, potem ten mod.
+Instrukcje instalacji ZombieBuddy znajdziesz na jego stronie Workshop.
+
+
+[hr][/hr]
+
+
+[h1]Steam Deck[/h1]
+
+Ten mod był rozwijany i testowany na Steam Decku. ZombieBuddy wymaga jednorazowej ręcznej instalacji w Desktop Mode (Linux nie potrafi automatycznie instalować Java agentów ze Steam Workshop).
+
+[b]Wersja skrócona[/b] — Skopiuj [code]ZombieBuddy.jar[/code] z folderu ZombieBuddy w Workshop do katalogu PZ [code]jre64/lib/[/code], a potem dodaj [code]-javaagent:ZombieBuddy.jar --[/code] w Launch Options PZ.
+
+
+[hr][/hr]
+
+
+[h1]Co dalej[/h1]
+
+Dopracowanie strefy snap dla głowy, żeby poprawić feeling — obecny hitbox głowy działa, ale mógłby być ciaśniejszy i bardziej responsywny.
+
+
+[hr][/hr]
+
+
+[i]Ten mod jest jeszcze w trakcie rozwoju — każdy feedback jest mile widziany.[/i]

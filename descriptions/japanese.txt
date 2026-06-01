@@ -1,0 +1,89 @@
+TITLE: B42 コントローラーエイムアシスト
+
+[h1]このModは何をするの?[/h1]
+
+このModは銃器使用時のコントローラー入力マッピングを一部変更し、合わせていくつかの感度メカニクスを追加します。これによって B41 のコントローラーでの射撃感がある程度戻ってきて、現バージョンでもゲームパッドで遠距離戦闘がちゃんと遊べる状態になります。目標は「遊べる」から「信頼できる」へ — そのために、もっとフィードバックが必要です。
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_2.gif[/img]
+
+
+[hr][/hr]
+
+
+[h1]変わったところ[/h1]
+
+[b]1. コントローラー入力マッピング[/b]
+照準レティクルを出すのに RT 半押しは不要 — 右スティックを倒すだけでエイムモードに入ります。
+
+[b]2. 動的感度[/b]
+Apex Legends と似たエイムアシストシステムを使っています。ゾンビの体と頭それぞれに独立したスローダウンゾーンがあり、感度レベルも別々です。レティクルがゾーンに入ると対応して減速し、さらにゾンビの動きを追従します。
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_1.gif[/img]
+
+[b]3. 右スティックの挙動[/b]
+動的感度に合うように、エイム中の右スティックの応答カーブを調整しました。
+
+
+[hr][/hr]
+
+
+[h1]変わっていないところ[/h1]
+
+[list]
+[*] 武器ダメージは変更なし
+[*] 命中判定は変更なし
+[*] 弾道挙動は変更なし
+[/list]
+
+
+[hr][/hr]
+
+
+[h1]使い方[/h1]
+
+[b]基本[/b]
+銃を構えた状態で右スティックを倒すとレティクルが出るので、ゾンビの近くまで持っていって微調整します。頭部エリアには分かりやすい吸着効果があります。
+慣れるには少し練習が必要かもしれません — 慣れる前は大事なセーブで試さないほうが無難です。
+
+[b]調整[/b]
+レティクルの動きが弱すぎる/強すぎると感じたら、設定ページのパラメータを自分好みに調整できます。(各パラメータの詳しい説明は今後のアップデートで追加予定。)
+
+[b]デバッグオーバーレイ(任意)[/b]
+設定ページの [i]Show snap zones[/i] を ON にすると、各ゾンビ周辺の体と頭のアシストゾーンが可視化されます。チューニングや demo 撮影に便利です。
+[i]注意: ゲームバランスに影響する可能性があるので、調整・録画用途のみ推奨 — 通常プレイには非推奨です。[/i]
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_3.gif[/img]
+
+
+[hr][/hr]
+
+
+[h1]動作要件[/h1]
+
+[b]ZombieBuddy[/b] — Workshop ID [b]3619862853[/b]
+このModは Java バイトコード注入フレームワークとして ZombieBuddy を使います。まず ZombieBuddy をサブスクライブして、それからこのModをサブスクライブしてください。
+ZombieBuddy のインストール手順は ZombieBuddy 自身の Workshop ページを参照。
+
+
+[hr][/hr]
+
+
+[h1]Steam Deck[/h1]
+
+このModは Steam Deck 上で開発・テストされています。ZombieBuddy は Desktop Mode で一度だけ手動インストールが必要です(Linux は Steam Workshop から Java agent を自動インストールできないため)。
+
+[b]簡易版[/b] — Workshop の ZombieBuddy フォルダから [code]ZombieBuddy.jar[/code] を PZ の [code]jre64/lib/[/code] ディレクトリにコピーし、PZ の Launch Options に [code]-javaagent:ZombieBuddy.jar --[/code] を追加。
+
+
+[hr][/hr]
+
+
+[h1]今後の予定[/h1]
+
+頭部の吸着ゾーンの感触を改善する予定 — 現在の頭部ヒットボックスは機能していますが、もっとタイトでレスポンスの良いものにできます。
+
+
+[hr][/hr]
+
+
+[i]このModはまだ開発中 — どんなフィードバックでも歓迎します。[/i]

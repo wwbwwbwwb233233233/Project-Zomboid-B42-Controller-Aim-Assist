@@ -115,16 +115,42 @@ function Overlay:render()
     end
 end
 
--- 单例 + 挂到 UIManager。OnGameStart 触发一次就够(主菜单不需要)。
-local g_instance = nil
+-- 防御层 1:这个 overlay 是纯视觉,不参与任何交互。
+-- 默认 ISUIElement 全屏会拦截鼠标 / 触摸事件 — 即使 render() 不画东西,
+-- 元素仍然在 UI 栈里"声称鼠标在我这儿",导致底下的时钟、小地图、UI 按钮全部
+-- 被吞 click。覆盖 isMouseOver() 永远返回 false,让事件穿透到下层元素。
+function Overlay:isMouseOver()
+    return false
+end
 
-local function ensureOverlay()
+-- 防御层 2:在用户没启用 overlay / 没在瞄准时,完全不挂到 UIManager。
+-- 只在真的需要画绿框/青框的瞬间才把元素加进 UI 栈。OnPlayerUpdate 每 tick
+-- 检查一次,toggle 切换是即时生效的。两个状态(g_added true/false)只在边界
+-- 切换时触发 addToUIManager / removeFromUIManager,正常运行时零 churn。
+local g_instance = nil
+local g_added = false
+
+local function ensureCreated()
     if g_instance then return end
     g_instance = Overlay:new()
     g_instance:initialise()
     g_instance:instantiate()
     g_instance:setAlwaysOnTop(false)  -- 让其它 HUD 元素覆盖在上面
-    g_instance:addToUIManager()
 end
 
-Events.OnGameStart.Add(ensureOverlay)
+local function syncOverlay()
+    ensureCreated()
+    local enabledByUser = caa_getShowOverlay and caa_getShowOverlay()
+    local activelyAiming = caa_isAiming and caa_isAiming()
+    local want = enabledByUser and activelyAiming
+    if want and not g_added then
+        g_instance:addToUIManager()
+        g_added = true
+    elseif not want and g_added then
+        g_instance:removeFromUIManager()
+        g_added = false
+    end
+end
+
+Events.OnGameStart.Add(syncOverlay)
+Events.OnPlayerUpdate.Add(syncOverlay)

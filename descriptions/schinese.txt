@@ -1,0 +1,89 @@
+TITLE: B42 手柄辅瞄
+
+[h1]这个模组是干什么的?[/h1]
+
+本模组修改了一部分手柄在使用枪械时的操作映射,以及一些配套的灵敏度机制,从而一定程度上还原 B41 的手柄射击手感,让当前版本的射击玩法达到一个可用的状态。目标是从"能用"走到"稳" — 还差更多反馈才能到那一步。
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_2.gif[/img]
+
+
+[hr][/hr]
+
+
+[h1]改了些啥?[/h1]
+
+[b]1. 控制器操作映射[/b]
+瞄准准心的呼出现在无需半扣 RT,直接推动右摇杆就可以进入瞄准状态。
+
+[b]2. 动态灵敏度[/b]
+采用了类似 Apex 英雄的自动瞄准机制。僵尸的身体和头部分别设有不同灵敏度的减速区域,当瞄准准星进入区域会触发对应的减速,也会触发对僵尸位置的跟踪。
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_1.gif[/img]
+
+[b]3. 右摇杆行为[/b]
+为了配合动态灵敏度的手感,修改了瞄准时右摇杆的映射曲线。
+
+
+[hr][/hr]
+
+
+[h1]没改啥?[/h1]
+
+[list]
+[*] 没改枪械伤害
+[*] 没改命中判定
+[*] 没改弹道行为
+[/list]
+
+
+[hr][/hr]
+
+
+[h1]怎么用?[/h1]
+
+[b]基础[/b]
+手持枪械时用右摇杆触发瞄准准心,将准心拖拽到僵尸附近并进行微调,僵尸头部区域会有一定的准心吸附效果。
+这个手感可能需要一定时间的练习,掌握之前尽量别在重要的存档里使用。
+
+[b]调节[/b]
+如果觉得准心行为太弱或者太强,可以在设置页面调节参数进行自定义的手感调整。(参数具体说明对照会在未来版本更新)
+
+[b]调试可视化(可选)[/b]
+在设置页面启用[i]显示辅助区可视化[/i],可以在每只可见僵尸周围画出身体(绿色矩形)和头部(青色矩形)辅助区。便于调参或录制 demo。
+[i]注意:此功能可能影响游戏平衡,建议仅在调参或录制时启用,日常游玩关闭。[/i]
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_3.gif[/img]
+
+
+[hr][/hr]
+
+
+[h1]运行要求[/h1]
+
+[b]ZombieBuddy[/b] — Workshop ID [b]3619862853[/b]
+本模组依赖 ZombieBuddy 作为 Java 字节码注入框架。先订阅 ZombieBuddy,再订阅本模组。
+ZombieBuddy 的安装方法详见其 Workshop 页面。
+
+
+[hr][/hr]
+
+
+[h1]Steam Deck[/h1]
+
+本模组在 Steam Deck 上开发和测试。ZombieBuddy 需要在桌面模式下手动安装一次(Linux 无法从 Steam Workshop 自动安装 Java agent)。
+
+[b]简版[/b] — 把 [code]ZombieBuddy.jar[/code] 从 Workshop 文件夹复制到 PZ 的 [code]jre64/lib/[/code] 目录,然后在 PZ 启动选项里加 [code]-javaagent:ZombieBuddy.jar --[/code]。
+
+
+[hr][/hr]
+
+
+[h1]接下来会做啥[/h1]
+
+打磨头部吸附区,让手感更准 — 当前头部判定能用,但还可以更紧、响应更灵敏。
+
+
+[hr][/hr]
+
+
+[i]本模组仍未完成,跪求各类反馈[/i]

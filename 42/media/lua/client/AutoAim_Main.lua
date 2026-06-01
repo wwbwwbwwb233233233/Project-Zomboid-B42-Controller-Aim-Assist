@@ -51,10 +51,24 @@ local function setAimingFlag(player, on)
     end
 end
 
--- 关闭 mod 状态 + 取消瞄准 flag
+-- 把 gate 的最终结论推给 Java。aimGranted=true 时 Patch_IsPrecisionAimKeyDown 才
+-- 强制精瞄。Java 不再自己读摇杆判断,完全听这个 —— 否则会绕过手柄绑定 + UI 判断。
+local function setAimGranted(on)
+    if caa_setAimGranted then pcall(caa_setAimGranted, on == true) end
+end
+
+-- 关闭 mod 状态 + 取消瞄准 flag。任何非激活路径都经过这里,所以在这里统一
+-- 收回 aimGranted,保证"只要不是完整 gate 通过,Java 就不强制瞄准"。
 local function deactivate(player)
     if M.State then M.State.isActive = false end
     setAimingFlag(player, false)
+    setAimGranted(false)
+end
+
+-- 把"UI 占用手柄"状态推给 Java。suppressed=true 时所有 Java patch 完全不介入
+-- (光靠 Lua 不 setIsAiming 不够 —— AimAxisX/Y 会独立改摇杆曲线干扰 UI 导航)。
+local function setSuppressed(on)
+    if caa_setSuppressed then pcall(caa_setSuppressed, on == true) end
 end
 
 local function onPlayerUpdate(player)
@@ -65,6 +79,16 @@ local function onPlayerUpdate(player)
     if not Config or not State or not Input then return end
 
     local playerNum = player:getPlayerNum()
+
+    -- 最优先:UI(轮盘菜单/地图/库存等)占用手柄时,右摇杆要完全留给 UI 导航。
+    -- 这个判断独立于其它 gate,每帧第一时间推给 Java,让所有 Java patch 一起退出。
+    -- 放最前是为了避免状态残留(其它 deactivate 路径可能提前 return,suppressed 来不及更新)。
+    local uiCapturing = Input.isControllerActive(playerNum) and Input.isUICapturingJoypad(playerNum)
+    setSuppressed(uiCapturing)
+    if uiCapturing then
+        deactivate(player)
+        return
+    end
 
     -- 各种"激活条件",任何一个不满足就 deactivate 然后退出。
     if Input.isMouseRecentlyActive() then
@@ -80,6 +104,14 @@ local function onPlayerUpdate(player)
         deactivate(player)
         return
     end
+    -- 武器未就绪(切换/收起/拔出动画进行中)→ 不瞄准。
+    if player.isWeaponReady then
+        local ok, ready = pcall(player.isWeaponReady, player)
+        if ok and ready == false then
+            deactivate(player)
+            return
+        end
+    end
     local stickX, stickY = Input.getRightStick(playerNum)
     local magnitude = math.sqrt(stickX * stickX + stickY * stickY)
     if magnitude < Config.STICK_DEAD_ZONE then
@@ -89,8 +121,9 @@ local function onPlayerUpdate(player)
 
     -- 全部 gate 通过 → 强制进入瞄准状态。
     -- vanilla 会用 RANGED_PRECISE 模式调 lerpAiming,我们的 Java patch 接管。
-    -- reticle 切换(CURSOR → RETICLE)由 Patch_IsPrecisionAimKeyDown 处理。
+    -- reticle 切换(CURSOR → RETICLE)由 Patch_IsPrecisionAimKeyDown 处理(它听 aimGranted)。
     setAimingFlag(player, true)
+    setAimGranted(true)
     State.isActive = true
 end
 

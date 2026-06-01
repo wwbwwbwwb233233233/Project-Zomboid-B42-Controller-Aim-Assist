@@ -39,3 +39,32 @@ function Input.isMouseRecentlyActive()
     end
     return false
 end
+
+-- UI 是否正在占用手柄输入(D-pad 轮盘菜单 / 地图 / 库存等)。
+-- 这种时候右摇杆是给 UI 导航用的,不能被我们当成瞄准动作截获,
+-- 否则会打断玩家在轮盘里选项目(vanilla 自己会 setJoypadIgnoreAimUntilCentered,
+-- 但我们用 setIsAiming 强制瞄准绕过了它,所以要自己挡)。
+function Input.isUICapturingJoypad(playerNum)
+    -- 1. 手柄焦点被某个 UI 元素持有(通用:轮盘、库存、聚焦的小地图等都 setJoypadFocus)。
+    --    这是 vanilla 自己判断 UI 占用用的同一个字段。
+    if getJoypadData then
+        local jd = getJoypadData(playerNum)
+        if jd and jd.focus ~= nil then return true end
+    end
+    -- 2. D-pad 轮盘菜单可见(兜底:以防 focus 设置有一帧时序差)。
+    -- 必须用 isReallyVisible(检查是否真在 UIManager 渲染树)!不能用 isVisible ——
+    -- getPlayerRadialMenu 返回的是持久共享对象,visible flag 默认/隐藏后都是 true
+    -- (undisplay 只 removeFromUIManager,不 setVisible(false)),用 isVisible 会永远
+    -- 返回 true → suppressed 永远 true → 整个 mod 所有功能被锁死。血泪教训。
+    if getPlayerRadialMenu then
+        local ok, radial = pcall(getPlayerRadialMenu, playerNum)
+        if ok and radial and radial.isReallyVisible then
+            local ok2, vis = pcall(radial.isReallyVisible, radial)
+            if ok2 and vis == true then return true end
+        end
+    end
+    -- 3. 全屏世界地图打开(兜底:World Map 是异步打开的,刚打开几帧 focus 可能还没设)。
+    --    ISWorldMap.instance 在地图打开时非 nil,关闭时置 nil。
+    if ISWorldMap and ISWorldMap.instance ~= nil then return true end
+    return false
+end

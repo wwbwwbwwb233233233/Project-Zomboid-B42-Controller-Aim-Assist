@@ -1,11 +1,11 @@
-name=【B42】手柄辅瞄 / [B42] Controller Aim Assist
+name=[B42] Controller Aim Assist
 id=B42ControllerAimAssist
 poster=poster.png
-description=这个 mod 修改了手柄的瞄准操作映射,在保留了当前 B42 射击玩法的情况下,通过动态灵敏度吸附和准星跟踪,一定程度上还原了 B41 枪械射击的手感,给原生手柄玩家一个可用的射击途径。依赖 ZombieBuddy。 ||| This mod remaps controller aim input. While preserving B42's current ranged combat mechanics, it brings back some of the B41 firearm feel through dynamic soft-snap sensitivity and reticle tracking, giving native-controller players a usable aiming option. Requires ZombieBuddy.
+description=This mod remaps controller aim input. While preserving B42's current ranged combat mechanics, it brings back some of the B41 firearm feel through dynamic soft-snap sensitivity and reticle tracking, giving native-controller players a usable aiming option. Requires ZombieBuddy.
 url=
-modversion=0.3.0
+modversion=0.4.0
 versionMin=42.18
-authors=wenbo
+authors=Here to Suffer not for Fun
 require=ZombieBuddy
 javaJarFile=media/java/ControllerAutoAim.jar
 javaPkgName=com.wenbo.controllerautoaim

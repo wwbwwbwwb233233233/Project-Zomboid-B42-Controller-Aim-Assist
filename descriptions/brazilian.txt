@@ -1,0 +1,89 @@
+TITLE: B42 — Auxílio de Mira para Controle
+
+[h1]O que esse mod faz?[/h1]
+
+Esse mod altera parte do mapeamento de entrada do controle para armas de fogo e adiciona algumas mecânicas de sensibilidade, trazendo de volta um pouco do feeling de tiro do B41 no controle e fazendo o combate à distância ficar de fato jogável no gamepad na versão atual. O objetivo é sair de "jogável" para "confiável" — e pra isso preciso de mais feedback.
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_2.gif[/img]
+
+
+[hr][/hr]
+
+
+[h1]O que mudou?[/h1]
+
+[b]1. Mapeamento do controle[/b]
+Você não precisa mais apertar o RT pela metade pra trazer a mira — é só empurrar o analógico direito que entra no modo de mira.
+
+[b]2. Sensibilidade dinâmica[/b]
+Usa um sistema de auxílio de mira parecido com Apex Legends. O corpo e a cabeça do zumbi têm zonas de desaceleração separadas, cada uma com nível de sensibilidade próprio. Quando a mira entra numa zona, ela desacelera proporcionalmente e ainda acompanha o movimento do zumbi.
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_1.gif[/img]
+
+[b]3. Comportamento do analógico direito[/b]
+A curva de resposta do analógico direito durante a mira foi ajustada pra acompanhar a sensibilidade dinâmica.
+
+
+[hr][/hr]
+
+
+[h1]O que NÃO mudou?[/h1]
+
+[list]
+[*] Dano das armas continua igual
+[*] Detecção de acerto continua igual
+[*] Comportamento balístico continua igual
+[/list]
+
+
+[hr][/hr]
+
+
+[h1]Como usar[/h1]
+
+[b]Básico[/b]
+Com uma arma na mão, empurre o analógico direito pra trazer a mira, leve até perto do zumbi e ajuste fino. A região da cabeça tem um efeito de snap perceptível.
+Pode levar um tempinho pra se acostumar — talvez não teste no seu save favorito antes de pegar o jeito.
+
+[b]Ajustes[/b]
+Se o comportamento da mira ficar fraco ou forte demais pro seu gosto, ajuste os parâmetros na página de configurações até achar o ponto. (Descrições detalhadas dos parâmetros vêm numa atualização futura.)
+
+[b]Overlay de debug (opcional)[/b]
+Ative [i]Show snap zones[/i] na página de configurações pra visualizar as zonas de auxílio do corpo e da cabeça em cada zumbi. Útil pra ajuste fino ou pra gravar demonstrações.
+[i]Aviso: isso pode afetar o balanceamento do jogo, então é recomendado só pra ajuste/gravação — não pra gameplay normal.[/i]
+
+[img]https://raw.githubusercontent.com/wwbwwbwwb233233233/Project-Zomboid-B42-Controller-Aim-Assist/main/assets/demo_3.gif[/img]
+
+
+[hr][/hr]
+
+
+[h1]Requisitos[/h1]
+
+[b]ZombieBuddy[/b] — Workshop ID [b]3619862853[/b]
+Esse mod usa o ZombieBuddy como framework de injeção de bytecode Java. Se inscreva no ZombieBuddy primeiro, depois nesse mod.
+Instruções de instalação do ZombieBuddy estão na página dele no Workshop.
+
+
+[hr][/hr]
+
+
+[h1]Steam Deck[/h1]
+
+Esse mod foi desenvolvido e testado no Steam Deck. O ZombieBuddy precisa de uma instalação manual única no Desktop Mode (Linux não consegue instalar Java agents do Steam Workshop automaticamente).
+
+[b]Versão rápida[/b] — Copie [code]ZombieBuddy.jar[/code] da pasta do ZombieBuddy no Workshop pro diretório [code]jre64/lib/[/code] do PZ, e adicione [code]-javaagent:ZombieBuddy.jar --[/code] nas Launch Options do PZ.
+
+
+[hr][/hr]
+
+
+[h1]Próximos passos[/h1]
+
+Refinar a zona de snap da cabeça pra melhorar o feeling — o hitbox atual da cabeça funciona, mas dá pra ser mais apertado e responsivo.
+
+
+[hr][/hr]
+
+
+[i]Esse mod ainda está em desenvolvimento — qualquer feedback é muito bem-vindo.[/i]
